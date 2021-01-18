@@ -86,7 +86,7 @@
                         foreach ($result as $value) {
                     ?>
                     <tr>
-                      <td><?php echo $i;?></td>
+                      <td><?php echo $i + $offset; ?></td>
                       <td><?php echo $value['title'];?></td>
                       <td><?php echo substr($value['content'], 0, 50);?></td>
                       <td>
