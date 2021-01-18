@@ -87,7 +87,7 @@
                         foreach ($result as $value) {
                     ?>
                     <tr>
-                      <td><?php echo $i;?></td>
+                      <td><?php echo $i + $offset; ?></td>
                       <td><?php echo $value['name'];?></td>
                       <td><?php echo $value['email'];?></td>
 
