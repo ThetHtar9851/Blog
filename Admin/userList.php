@@ -91,7 +91,6 @@
                       <td><?php echo $i + $offset; ?></td>
                       <td><?php echo escape($value['name']);?></td>
                       <td><?php echo escape($value['email']);?></td>
-
                       <td>
                         <?php 
                           if($value['role'] == 1) {
