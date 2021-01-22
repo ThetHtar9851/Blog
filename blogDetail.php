@@ -1,6 +1,7 @@
 <?php
   session_start();
   require 'config/config.php';
+  require 'config/common.php';
 
   if(empty($_SESSION['user_id']) && empty($_SESSION['logged_in'])) {
     header('Location: login.php');
@@ -126,6 +127,7 @@
           <!-- /.card-footer -->
           <div class="card-footer">
             <form action="" method="post">
+            <input type="hidden" name="_token" value="<?php echo $_SESSION['_token']; ?>">
               <p style="color:red";><?php echo empty($commentError) ? '' : '*'.$commentError; ?></p>
               <div class="img-push">
                 <input name="comment" type="text" class="form-control form-control-sm" placeholder="Press enter to post comment">
