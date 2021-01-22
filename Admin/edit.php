@@ -34,15 +34,26 @@
           $image = $_FILES['image']['name'];
           move_uploaded_file($_FILES['image']['tmp_name'], $file);
         
-          $stat = $pdo->prepare("UPDATE posts SET title='$title', content='$content', image='$image' WHERE id='$id'");
-          $result = $stat->execute();
+          $stat = $pdo->prepare("UPDATE posts SET title=:title, content=:content, image=:image WHERE id='$id'");
+          $result = $stat->execute(
+          array(
+            ':title'=>$title,
+            ':content'=>$content,
+            ':image'=>$image
+            )
+          );
           if($result){
             echo "<script>alert('Successfully Updated');window.location.href='index.php';</script>";
           }
         }
       } else{
-          $stat = $pdo->prepare("UPDATE posts SET title='$title', content='$content' WHERE id='$id'");
-          $result = $stat->execute();
+          $stat = $pdo->prepare("UPDATE posts SET title=:title, content=:content WHERE id='$id'");
+          $result = $stat->execute(
+          array(
+            ':title'=>$title,
+            ':content'=>$content
+            )
+          );
           if($result){
             echo "<script>alert('Successfully Updated');window.location.href='index.php';</script>";
           }
@@ -81,7 +92,7 @@
                   <div class="form-group">
                     <label for="">Image</label><br>
                     <input type="file" name="image" value=""><br><br>
-                    <img src="images/<?php echo escape($result[0]['image']);?>" width="150px" heigh="150px" alt="">
+                    <img src="images/<?php echo $result[0]['image'];?>" width="150px" heigh="150px" alt="">
                   </div>
                   <div class="form-group">
                     <input type="submit" class="btn btn-success" name="" value="UPDATE">

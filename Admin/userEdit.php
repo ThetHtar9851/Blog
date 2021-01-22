@@ -39,16 +39,30 @@
         if ($user) {
           echo "<script>alert('Email Duplicated');</script>";
         }elseif(!empty($_POST['password'])) {
-          $stat = $pdo->prepare("UPDATE users SET name='$name', email='$email', password='$password', role='$role' WHERE id='$id'");
+          $stat = $pdo->prepare("UPDATE users SET name=:name, email=:email, password=:password, role=:role WHERE id='$id'");
+          $result = $stat->execute(
+           array(
+            ':name'=>$name,
+            ':email'=>$email,
+            ':password'=>$password,
+            ':role'=>$role
+            )
+          );
         }elseif (empty($_POST['password'])) {
-          $stat = $pdo->prepare("UPDATE users SET name='$name', email='$email', role='$role' WHERE id='$id'");
+          $stat = $pdo->prepare("UPDATE users SET name=:name, email=:email, role=:role WHERE id='$id'");
+          $result = $stat->execute(
+           array(
+            ':name'=>$name,
+            ':email'=>$email,
+            ':role'=>$role
+            )
+          );
         }
-          $result = $stat->execute();
-          if($result){
-            echo "<script>alert('Successfully Updated');window.location.href='userList.php';</script>";
-        }
+        if($result){
+          echo "<script>alert('Successfully Updated');window.location.href='userList.php';</script>";
       }
     }
+  }
 
   $stat = $pdo->prepare("SELECT * FROM users WHERE id=".$_GET['id']);
   $stat->execute();
