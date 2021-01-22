@@ -92,13 +92,13 @@
         <!-- Box Comment -->
         <div class="card card-widget">
           <div class="card-header">
-            <div class="card-title" style="text-align: center;float: none;"><h2><?php echo $result[0]['title'];?></h2>
+            <div class="card-title" style="text-align: center;float: none;"><h2><?php echo escape($result[0]['title']);?></h2>
             </div>
           </div>
           <!-- /.card-header -->
           <div class="card-body">
-            <img src="Admin/images/<?php echo $result[0]['image'];?>" alt=""><br><br> 
-            <p><?php echo $result[0]['content'];?></p>
+            <img src="Admin/images/<?php echo escape($result[0]['image']);?>" alt=""><br><br> 
+            <p><?php echo escape($result[0]['content']);?></p>
             <h3>Comment</h3><hr>
             <a href="/blog" class="btn  btn-default" type="button">Back</a>
           </div>
@@ -109,10 +109,10 @@
                 <div class="comment-text" style="margin-left: 0px !important;">
                   <?php foreach ($cmResult as $key => $value) { ?>                      
                     <span class="username">
-                    <?php print_r($auResult[$key][0]['name']);?>
-                    <span class="text-muted float-right"><?php echo $value['created_at'];?></span>
+                    <?php echo escape($auResult[$key][0]['name']);?>
+                    <span class="text-muted float-right"><?php echo escape($value['created_at']);?></span>
                   </span><!-- /.username -->
-                  <?php echo $value['content'];?><br>
+                  <?php echo escape($value['content']);?><br>
                 <?php
                   }
                 ?>
