@@ -11,30 +11,43 @@
   }
 
   if($_POST){
-    $id = $_POST['id'];
-    $name = $_POST['name'];
-    $email = $_POST['email'];
-    $password = $_POST['password'];
-    if (empty($_POST['role'])) {
-      $role = 0;
+    if(empty($_POST['name']) || empty($_POST['email'])) {
+      if(empty($_POST['name'])) {
+        $nameError = "Name is required";
+      }
+      if(empty($_POST['email'])) {
+        $emailError = "Email is required";
+      }
+    }elseif(!empty($_POST['password']) && strlen($_POST['password']) < 4) {
+      $passwordMaxError = "Password must be at least 4 characters";
     }else {
-      $role = 1;
-    } 
-
-      $stat = $pdo->prepare("SELECT * FROM users WHERE id!=:id AND email=:email");
-      $stat->execute(array(':id'=>$id,':email'=>$email));
-      $user = $stat->fetch(PDO::FETCH_ASSOC);
-
-      if ($user) {
-        echo "<script>alert('Email Duplicated');</script>";
+      $id = $_POST['id'];
+      $name = $_POST['name'];
+      $email = $_POST['email'];
+      $password = $_POST['password'];
+      if (empty($_POST['role'])) {
+        $role = 0;
       }else {
-        $stat = $pdo->prepare("UPDATE users SET name='$name', email='$email', password='$password', role='$role' WHERE id='$id'");
-        $result = $stat->execute();
-        if($result){
-          echo "<script>alert('Successfully Updated');window.location.href='userList.php';</script>";
+        $role = 1;
+      } 
+
+        $stat = $pdo->prepare("SELECT * FROM users WHERE id!=:id AND email=:email");
+        $stat->execute(array(':id'=>$id,':email'=>$email));
+        $user = $stat->fetch(PDO::FETCH_ASSOC);
+
+        if ($user) {
+          echo "<script>alert('Email Duplicated');</script>";
+        }elseif(!empty($_POST['password'])) {
+          $stat = $pdo->prepare("UPDATE users SET name='$name', email='$email', password='$password', role='$role' WHERE id='$id'");
+        }elseif (empty($_POST['password'])) {
+          $stat = $pdo->prepare("UPDATE users SET name='$name', email='$email', role='$role' WHERE id='$id'");
+        }
+          $result = $stat->execute();
+          if($result){
+            echo "<script>alert('Successfully Updated');window.location.href='userList.php';</script>";
+        }
       }
     }
-  }
 
   $stat = $pdo->prepare("SELECT * FROM users WHERE id=".$_GET['id']);
   $stat->execute();
@@ -55,15 +68,18 @@
                   <div class="form-group">
                     <input type="hidden" name="id" value="<?php echo $result[0]['id']?>">
                     <label for="">Name</label>
-                    <input type="text" class="form-control" name="name" value="<?php echo $result[0]['name'];?>" required>
+                    <p style="color:red";><?php echo empty($nameError) ? '' : '*'.$nameError; ?></p>
+                    <input type="text" class="form-control" name="name" value="<?php echo $result[0]['name'];?>">
                   </div>
                   <div class="form-group">
                     <label for="">E-mail</label>
-                    <input type="email" class="form-control" name="email" value="<?php echo $result[0]['email'];?>" required>
+                    <p style="color:red";><?php echo empty($emailError) ? '' : '*'.$emailError; ?></p>       <input type="email" class="form-control" name="email" value="<?php echo $result[0]['email'];?>">
                   </div>
                   <div class="form-group">
-                    <label for="">Password</label>
-                    <input type="password" class="form-control" name="password" value="<?php echo $result[0]['password'];?>" required>
+                    <label for="">Password</label><br>
+                    <span style="font-size: 15px">The user already has password!<span>
+                    <p style="color:red";><?php echo empty($passwordMaxError) ? '' : '*'.$passwordMaxError; ?></p>
+                    <input type="password" class="form-control" name="password" value="">
                   </div>
                   <div class="form-group">
                     <label for="">Admin</label>

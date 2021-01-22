@@ -3,28 +3,43 @@
   require 'config/config.php';
 
   if($_POST) {
-    $name = $_POST['name'];
-    $email = $_POST['email'];
-    $password = $_POST['password'];
+    if(empty($_POST['name']) || empty($_POST['email']) || empty($_POST['password']) || strlen($_POST['password']) < 4) {
+      if(empty($_POST['name'])) {
+        $nameError = "Name is required";
+      }
+      if(empty($_POST['email'])) {
+        $emailError = "Email is required";
+      }
+      if(empty($_POST['password'])) {
+        $passwordError = "Password is required";
+      }
+      if(strlen($_POST['password']) < 4) {
+        $passwordMaxError = "Password must be at least 4 characters";
+      }
+    }else{
+      $name = $_POST['name'];
+      $email = $_POST['email'];
+      $password = $_POST['password'];
 
-    $stat = $pdo->prepare("SELECT * FROM users WHERE email=:email");
-    $stat->bindValue(':email',$email);
-    $stat->execute();
-    $user = $stat->fetch(PDO::FETCH_ASSOC);
+      $stat = $pdo->prepare("SELECT * FROM users WHERE email=:email");
+      $stat->bindValue(':email',$email);
+      $stat->execute();
+      $user = $stat->fetch(PDO::FETCH_ASSOC);
 
-    if ($user) {
-      echo "<script>alert('Email Duplicated');window.location.href='register.php';</script>";
-    }else {
-      $stat = $pdo->prepare("INSERT INTO users(name,email,password) VALUES(:name,:email,:password)");
-      $result = $stat->execute(
-        array(
-          ':name'=>$name,
-          ':email'=>$email,
-          ':password'=>$password,
-        )
-      );
-      if($result){
-        echo "<script>alert('Successfully Registered,you can now login');window.location.href='login.php';</script>";
+      if ($user) {
+        echo "<script>alert('Email Duplicated');window.location.href='register.php';</script>";
+      }else {
+        $stat = $pdo->prepare("INSERT INTO users(name,email,password) VALUES(:name,:email,:password)");
+        $result = $stat->execute(
+          array(
+            ':name'=>$name,
+            ':email'=>$email,
+            ':password'=>$password,
+          )
+        );
+        if($result){
+          echo "<script>alert('Successfully Registered,you can now login');window.location.href='login.php';</script>";
+        }
       }
     }  
   }
@@ -61,24 +76,36 @@
       <p class="login-box-msg">Register New Member</p>
 
       <form action="register.php" method="post">
+        <p style="color:red";><?php echo empty($nameError) ? '' : '*'.$nameError; ?></p>
         <div class="input-group mb-3">
-          <input type="text" name="name" class="form-control" placeholder="Name" required>
+          <input type="text" name="name" class="form-control" placeholder="Name">
+          <div class="input-group-append">
+            <div class="input-group-text">
+              <span class="fas fa-user"></span>
+            </div>
+          </div>
+        </div>
+        <p style="color:red";><?php echo empty($emailError) ? '' : '*'.$emailError; ?></p>
+        <div class="input-group mb-3">
+          <input type="email" name="email" class="form-control" placeholder="Email">
           <div class="input-group-append">
             <div class="input-group-text">
               <span class="fas fa-envelope"></span>
             </div>
           </div>
         </div>
+        <p style="color:red";>
+          <?php 
+           if(!empty($passwordError)){
+            echo '*'.$passwordError;
+           }
+           elseif (!empty($passwordMaxError)) {
+            echo '*'.$passwordMaxError;
+           }
+          ?>
+        </p>
         <div class="input-group mb-3">
-          <input type="email" name="email" class="form-control" placeholder="Email" required>
-          <div class="input-group-append">
-            <div class="input-group-text">
-              <span class="fas fa-envelope"></span>
-            </div>
-          </div>
-        </div>
-        <div class="input-group mb-3">
-          <input type="password" name="password" class="form-control" placeholder="Password" required>
+          <input type="password" name="password" class="form-control" placeholder="Password">
           <div class="input-group-append">
             <div class="input-group-text">
               <span class="fas fa-lock"></span>

@@ -31,19 +31,23 @@
   }  
 
   if($_POST){
-    $blog_id = $_GET['id'];
-    $comment = $_POST['comment'];
+    if(empty($_POST['comment'])) {
+        $commentError = "Comment is required";
+    }else {
+      $blog_id = $_GET['id'];
+      $comment = $_POST['comment'];
 
-    $stat = $pdo->prepare("INSERT INTO comments(content,post_id,author_id) VALUES(:content,:post_id,:author_id)");
-    $result = $stat->execute(
-      array(
-        ':content'=>$comment,
-        ':post_id'=>$blog_id,
-        ':author_id'=>$_SESSION['user_id']
-      )
-    ); 
-    if ($result) {
-         header('Location: blogDetail.php?id='.$blogId);
+      $stat = $pdo->prepare("INSERT INTO comments(content,post_id,author_id) VALUES(:content,:post_id,:author_id)");
+      $result = $stat->execute(
+        array(
+          ':content'=>$comment,
+          ':post_id'=>$blog_id,
+          ':author_id'=>$_SESSION['user_id']
+        )
+      ); 
+      if ($result) {
+           header('Location: blogDetail.php?id='.$blogId);
+      }
     }   
   }
 ?>
@@ -122,6 +126,7 @@
           <!-- /.card-footer -->
           <div class="card-footer">
             <form action="" method="post">
+              <p style="color:red";><?php echo empty($commentError) ? '' : '*'.$commentError; ?></p>
               <div class="img-push">
                 <input name="comment" type="text" class="form-control form-control-sm" placeholder="Press enter to post comment">
               </div>
